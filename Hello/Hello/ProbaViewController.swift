@@ -7,9 +7,9 @@
 //
 import UIKit
 import Firebase
-
-
-class ProbaViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+//import HTPChooseViewController
+import VKSdkFramework
+@objc class ProbaViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
 //    let arrayOfUsers = ["Иванов","Сидоров","Петров"]
 //    let arrayOfWork = ["Ремонтирую Iphone","Студент","Инженер физик ядерщик"]
@@ -18,7 +18,8 @@ class ProbaViewController: UIViewController, UITableViewDataSource, UITableViewD
     var name : String!
     var rootRef: FIRDatabaseReference!
     var arrayOfUsers = [NSDictionary]()
-    
+    var activityIndicator = UIActivityIndicatorView()
+    var tok = VKAccessToken()
     @IBOutlet weak var tableView: UITableView!
     
     
@@ -29,23 +30,10 @@ class ProbaViewController: UIViewController, UITableViewDataSource, UITableViewD
 
     }
     
-//    func getUsers(){
-//        rootRef = FIRDatabase.database().reference()
-//               let userRef = self.rootRef.child("users")
-//        userRef.observe(.childAdded, with: { snapshot in
-//                        if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
-//                            for snap in snapshots{
-//                                self.arrayOfUsers.append(snap.value as! NSDictionary)
-//                            }
-//                        }
-//                        
-//                    })
-//
-//         self.tableView.reloadData()
-//
-//    }
     override func viewWillAppear(_ animated: Bool) {
-        //начало ромашки
+        self.activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        self.activityIndicator.frame = CGRect(x: 163, y: 318, width: 200, height: 200)
+        self.activityIndicator.startAnimating()
         rootRef = FIRDatabase.database().reference()
         let userRef = self.rootRef.child("users")
         userRef.observe(.value, with: { snapshot in
@@ -54,13 +42,11 @@ class ProbaViewController: UIViewController, UITableViewDataSource, UITableViewD
                     self.arrayOfUsers.append(snap.value as! NSDictionary)
                 }
             self.tableView.reloadData()
-                //конец ромашки
+                self.activityIndicator.stopAnimating()
             }
             
         })
         
- 
-        //self.getUsers()
     }
     
     //Указываем количество рядов в секции
@@ -92,6 +78,9 @@ class ProbaViewController: UIViewController, UITableViewDataSource, UITableViewD
         return cell
     }
 
+  override  func viewDidDisappear(_ animated: Bool) {
+        self.arrayOfUsers.removeAll()
+    }
 
   //  @IBOutlet weak var AvaProfil: UIImageView!
     
@@ -103,21 +92,22 @@ class ProbaViewController: UIViewController, UITableViewDataSource, UITableViewD
         
         //Попытка присвония объектам информации из ячейки
     
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "toProfile"{
-//            //let indexp = self.tableView.indexPathForSelectedRow as? (NSIndexPath)
-//            if  let profile = segue.destination as? HTPChooseProfileViewController{
-//                name = arrayOfUsers[(indexp?.row)!]
-//        profile.image = name
-//            }
-//        }
-//        
-//    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "chosenUser"{
+            let indexp = self.tableView.indexPathForSelectedRow as? (NSIndexPath)
+            if  let profile = segue.destination as? HTPChooseViewController{
+                profile.loggedUser = arrayOfUsers[(indexp?.row)!] as! [AnyHashable : Any]
+                profile.tok = self.tok
+            }
+        }
+        
+    }
  
     
 }
 
-   
+
+
         
 
 

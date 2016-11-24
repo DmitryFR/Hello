@@ -21,8 +21,8 @@
 		AA60894F1DE1E7800082913C /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA60894E1DE1E7800082913C /* MapViewController.m */; };
 		AA6089681DE1EDE50082913C /* ProbaTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6089671DE1EDE50082913C /* ProbaTableViewCell.swift */; };
 		AA60896A1DE1EDED0082913C /* ProbaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6089691DE1EDED0082913C /* ProbaViewController.swift */; };
-		AA63B5441DD75AF100AA962C /* VKSdkFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA63B5411DD757C200AA962C /* VKSdkFramework.framework */; };
-		AA63B5451DD75AF100AA962C /* VKSdkFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AA63B5411DD757C200AA962C /* VKSdkFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AA60896D1DE33ED00082913C /* HTPChooseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA60896C1DE33ED00082913C /* HTPChooseViewController.m */; };
+		AA6089701DE34AC90082913C /* chatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA60896F1DE34AC90082913C /* chatViewController.m */; };
 		AA63B5491DD75B7E00AA962C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA63B5481DD75B7E00AA962C /* Foundation.framework */; };
 		AA63B54B1DD75B8500AA962C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA63B54A1DD75B8500AA962C /* UIKit.framework */; };
 		AA63B54D1DD75B8F00AA962C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA63B54C1DD75B8F00AA962C /* CoreGraphics.framework */; };
@@ -54,41 +54,6 @@
 			remoteGlobalIDString = FBA358CC19655FED00A86282;
 			remoteInfo = GeoFireTests;
 		};
-		AA63B53C1DD757C200AA962C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA491E301DD75515003D47C3 /* VK-ios-sdk.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F3C7542D182133CC00964716;
-			remoteInfo = VKSdk;
-		};
-		AA63B53E1DD757C200AA962C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA491E301DD75515003D47C3 /* VK-ios-sdk.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F3BACC401865905B003158DA;
-			remoteInfo = VKSdkResources;
-		};
-		AA63B5401DD757C200AA962C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA491E301DD75515003D47C3 /* VK-ios-sdk.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F34670311B8B7C5A003EF74B;
-			remoteInfo = VKSdkFramework;
-		};
-		AA63B5421DD757C200AA962C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA491E301DD75515003D47C3 /* VK-ios-sdk.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F3C58CCD1D213B2C005E94B5;
-			remoteInfo = VKSdkTests;
-		};
-		AA63B5461DD75AF100AA962C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA491E301DD75515003D47C3 /* VK-ios-sdk.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = F34670301B8B7C5A003EF74B;
-			remoteInfo = VKSdkFramework;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -98,7 +63,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				AA63B5451DD75AF100AA962C /* VKSdkFramework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -135,7 +99,6 @@
 		AA491CED1DCE0901003D47C3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AA491CF01DD74C7D003D47C3 /* Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Profile.h; sourceTree = "<group>"; };
 		AA491CF11DD74C7D003D47C3 /* Profile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Profile.m; sourceTree = "<group>"; };
-		AA491E301DD75515003D47C3 /* VK-ios-sdk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "VK-ios-sdk.xcodeproj"; path = "../../vk-ios-sdk-master/VK-ios-sdk.xcodeproj"; sourceTree = "<group>"; };
 		AA6088DD1DDCAE1F0082913C /* Hello-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Hello-Bridging-Header.h"; sourceTree = "<group>"; };
 		AA6088ED1DE1E33C0082913C /* GeoFire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GeoFire.xcodeproj; path = "../../geofire-objc-master/GeoFire.xcodeproj"; sourceTree = "<group>"; };
 		AA6089451DE1E76B0082913C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -143,6 +106,10 @@
 		AA60894E1DE1E7800082913C /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		AA6089671DE1EDE50082913C /* ProbaTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProbaTableViewCell.swift; sourceTree = "<group>"; };
 		AA6089691DE1EDED0082913C /* ProbaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProbaViewController.swift; sourceTree = "<group>"; };
+		AA60896B1DE33ED00082913C /* HTPChooseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTPChooseViewController.h; sourceTree = "<group>"; };
+		AA60896C1DE33ED00082913C /* HTPChooseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTPChooseViewController.m; sourceTree = "<group>"; };
+		AA60896E1DE34AC90082913C /* chatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chatViewController.h; sourceTree = "<group>"; };
+		AA60896F1DE34AC90082913C /* chatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = chatViewController.m; sourceTree = "<group>"; };
 		AA63B5481DD75B7E00AA962C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AA63B54A1DD75B8500AA962C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AA63B54C1DD75B8F00AA962C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -169,7 +136,6 @@
 				AA63B54B1DD75B8500AA962C /* UIKit.framework in Frameworks */,
 				AA63B5491DD75B7E00AA962C /* Foundation.framework in Frameworks */,
 				CC565F33B9BB1565D7BD65A2 /* Pods_Hello.framework in Frameworks */,
-				AA63B5441DD75AF100AA962C /* VKSdkFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +194,10 @@
 				AA491CF01DD74C7D003D47C3 /* Profile.h */,
 				AA491CF11DD74C7D003D47C3 /* Profile.m */,
 				AA491CD11DCE0661003D47C3 /* Main.storyboard */,
+				AA60896B1DE33ED00082913C /* HTPChooseViewController.h */,
+				AA60896C1DE33ED00082913C /* HTPChooseViewController.m */,
+				AA60896E1DE34AC90082913C /* chatViewController.h */,
+				AA60896F1DE34AC90082913C /* chatViewController.m */,
 				AA6089671DE1EDE50082913C /* ProbaTableViewCell.swift */,
 				AA6089691DE1EDED0082913C /* ProbaViewController.swift */,
 				AA491CD41DCE0661003D47C3 /* Assets.xcassets */,
@@ -244,7 +214,6 @@
 			isa = PBXGroup;
 			children = (
 				AA6088ED1DE1E33C0082913C /* GeoFire.xcodeproj */,
-				AA491E301DD75515003D47C3 /* VK-ios-sdk.xcodeproj */,
 				AA491CC91DCE0661003D47C3 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -264,17 +233,6 @@
 			children = (
 				AA6089561DE1E8F30082913C /* libGeoFire.a */,
 				AA6089581DE1E8F30082913C /* GeoFireTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		AA63B5361DD757C200AA962C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AA63B53D1DD757C200AA962C /* libVKSdk.a */,
-				AA63B53F1DD757C200AA962C /* VKSdkResources.bundle */,
-				AA63B5411DD757C200AA962C /* VKSdkFramework.framework */,
-				AA63B5431DD757C200AA962C /* VKSdkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -315,7 +273,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				AA63B5471DD75AF100AA962C /* PBXTargetDependency */,
 			);
 			name = Hello;
 			productName = Hello;
@@ -387,10 +344,6 @@
 					ProductGroup = AA6089501DE1E8F30082913C /* Products */;
 					ProjectRef = AA6088ED1DE1E33C0082913C /* GeoFire.xcodeproj */;
 				},
-				{
-					ProductGroup = AA63B5361DD757C200AA962C /* Products */;
-					ProjectRef = AA491E301DD75515003D47C3 /* VK-ios-sdk.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -413,34 +366,6 @@
 			fileType = wrapper.cfbundle;
 			path = GeoFireTests.xctest;
 			remoteRef = AA6089571DE1E8F30082913C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA63B53D1DD757C200AA962C /* libVKSdk.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libVKSdk.a;
-			remoteRef = AA63B53C1DD757C200AA962C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA63B53F1DD757C200AA962C /* VKSdkResources.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = VKSdkResources.bundle;
-			remoteRef = AA63B53E1DD757C200AA962C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA63B5411DD757C200AA962C /* VKSdkFramework.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = VKSdkFramework.framework;
-			remoteRef = AA63B5401DD757C200AA962C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA63B5431DD757C200AA962C /* VKSdkTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = VKSdkTests.xctest;
-			remoteRef = AA63B5421DD757C200AA962C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -564,6 +489,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA60896D1DE33ED00082913C /* HTPChooseViewController.m in Sources */,
 				AA491CD01DCE0661003D47C3 /* ViewController.m in Sources */,
 				AA491CF21DD74C7D003D47C3 /* Profile.m in Sources */,
 				AA6089681DE1EDE50082913C /* ProbaTableViewCell.swift in Sources */,
@@ -571,6 +497,7 @@
 				AA491CCA1DCE0661003D47C3 /* main.m in Sources */,
 				AA60896A1DE1EDED0082913C /* ProbaViewController.swift in Sources */,
 				AA60894F1DE1E7800082913C /* MapViewController.m in Sources */,
+				AA6089701DE34AC90082913C /* chatViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,11 +516,6 @@
 			isa = PBXTargetDependency;
 			target = AA491CC41DCE0661003D47C3 /* Hello */;
 			targetProxy = AA491CDF1DCE0661003D47C3 /* PBXContainerItemProxy */;
-		};
-		AA63B5471DD75AF100AA962C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = VKSdkFramework;
-			targetProxy = AA63B5461DD75AF100AA962C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -709,6 +631,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A8008456C820D6261E049F48 /* Pods-Hello.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Hello/Hello.entitlements;
@@ -727,6 +650,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 19C9779019CD54182DDC59F6 /* Pods-Hello.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Hello/Hello.entitlements;

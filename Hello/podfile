@@ -9,7 +9,8 @@ target 'Hello' do
 
 pod 'Firebase'
 pod 'Firebase/Database'
-#pod 'GeoFire' 
+#pod 'GeoFire'
+pod 'VK-ios-sdk' 
   target 'HelloTests' do
     inherit! :search_paths
     # Pods for testing

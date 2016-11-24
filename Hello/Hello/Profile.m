@@ -10,7 +10,7 @@
 #import "ViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import <CoreLocation/CLLocation.h>
-
+#import "Hello-Swift.h"
 static VKAuthorizationResult *ress;
 @interface Profile ()<CLLocationManagerDelegate>{
     CLLocationManager *locManager;
@@ -80,11 +80,11 @@ static VKAuthorizationResult *ress;
 }
 
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
+-(void)viewDidDisappear:(BOOL)animated{
+   ProbaViewController *tabl = [self.tabBarController.viewControllers objectAtIndex:1];
+    tabl.tok = self.res;
+}
 
 
 

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FireBase.h"
 #import <MapKit/MapKit.h>
-#import "GeoFire/GeoFire.h>
+//#import "GeoFire/GeoFire.h>
 
 @interface MapViewController : UIViewController
 
