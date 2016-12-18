@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <VKSdkFramework/VKSdkFramework.h>
+#import <VK_ios_sdk/VKSdk.h>
 @interface HTPChooseViewController : UIViewController <VKSdkDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *lastname;
 @property (weak, nonatomic) IBOutlet UILabel *ident;

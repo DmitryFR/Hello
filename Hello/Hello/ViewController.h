@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <VKSdkFramework/VKSdkFramework.h>
+#import <VK_ios_sdk/VKSdk.h>
 @interface ViewController : UIViewController <VKSdkDelegate>
 
 

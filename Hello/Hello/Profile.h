@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <VKSdkFramework/VKSdkFramework.h>
+#import <VK_ios_sdk/VKSdk.h>
 #import <Firebase.h>
 
 @interface Profile : UIViewController{
@@ -25,5 +25,5 @@
 
 @property (nonatomic, strong)VKAccessToken *res;
 @property (nonatomic, strong)FIRDatabaseReference *rootRef;
-@property (nonatomic, strong)NSDictionary *usr;
+@property (nonatomic, strong)NSMutableDictionary *usr;
 @end

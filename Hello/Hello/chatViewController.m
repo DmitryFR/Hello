@@ -11,9 +11,21 @@
 @interface chatViewController ()
 @property (strong, nonatomic) NSArray *msgArr;
 @property (strong, nonatomic)NSDictionary *dict;
+@property (strong, nonatomic)NSDictionary *test;
 @end
 
 @implementation chatViewController
+
+
+- (IBAction)addToFav:(id)sender {
+//    VKRequest *dialogReq = [VKRequest requestWithMethod:@"messages.getDialogs" parameters:@{@"count":@3}];
+//    [dialogReq executeWithResultBlock:^(VKResponse *response){
+//        NSLog(@"Result: %@", response);
+//    }errorBlock:^(NSError *error) {
+//        NSLog(@"Error: %@", error);
+//    }];
+
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -21,7 +33,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     NSNumber *idd = [self.loggedUser valueForKey:@"id"];
-    VKRequest *history_req = [VKRequest requestWithMethod:@"messages.getHistory" parameters:@{VK_API_USER_ID: @"15157193", VK_API_COUNT:@20}];
+    VKRequest *history_req = [VKRequest requestWithMethod:@"messages.getHistory" parameters:@{VK_API_USER_ID: idd, VK_API_COUNT:@20}];
     [history_req executeWithResultBlock:^(VKResponse *response) {
         NSLog(@"Result: %@", response);
         self.msgArr = [response.json valueForKey:@"items"];
@@ -61,7 +73,7 @@
     }];
 self.messg.text = @"";
    
-    VKRequest *history_req = [VKRequest requestWithMethod:@"messages.getHistory" parameters:@{VK_API_USER_ID: @"15157193", VK_API_COUNT:@20}];
+    VKRequest *history_req = [VKRequest requestWithMethod:@"messages.getHistory" parameters:@{VK_API_USER_ID: idd, VK_API_COUNT:@20}];
     [history_req executeWithResultBlock:^(VKResponse *response) {
         NSLog(@"Result: %@", response);
         self.msgArr = [response.json valueForKey:@"items"];

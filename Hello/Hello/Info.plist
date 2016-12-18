@@ -45,6 +45,8 @@
 	<string>Использовать местоположение?</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Необходимо включить распознавание вашего местоположения</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Поиск людей рядом с вами по Bluetooth</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

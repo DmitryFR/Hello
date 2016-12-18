@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <VKSdkFramework/VKSdkFramework.h>
+#import <VK_ios_sdk/VKSdk.h>
+#import "AppDelegate.h"
 @interface chatViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *messg;
 - (IBAction)sendMsg:(id)sender;
 @property (strong, nonatomic)NSDictionary *loggedUser;
 @property (strong, nonatomic)VKAccessToken *tok;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (retain, nonatomic)NSManagedObject *favChat;
 
 @end

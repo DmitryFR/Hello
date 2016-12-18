@@ -7,7 +7,8 @@
 //
 
 #import "ViewController.h"
-#import "Profile.h"
+//#import "Profile.h"
+#import "Hello-Swift.h"
 static NSString *const TOKEN_KEY = @"my_application_access_token";
 static NSString *const NEXT_CONTROLLER_SEGUE_ID = @"ToProfile";
 static NSArray *SCOPE = nil;
@@ -15,6 +16,7 @@ static NSArray *SCOPE = nil;
 
 @property (nonatomic, strong)VKAccessToken *res;
 @property (strong, nonatomic)UITabBarController *tbController;
+@property (strong, nonatomic)NSMutableDictionary *currentUser;
 @end
 
 @implementation ViewController
@@ -27,6 +29,7 @@ static NSArray *SCOPE = nil;
     [VKSdk wakeUpSession:SCOPE completeBlock:^(VKAuthorizationState state, NSError *error) {
         if (state == VKAuthorizationAuthorized) {
             _res = [VKSdk accessToken];
+            
             [self startWorking];
         } else if (error) {
             [[[UIAlertView alloc] initWithTitle:nil message:[error description] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
@@ -35,7 +38,7 @@ static NSArray *SCOPE = nil;
 }
 
 - (void)startWorking {
-  
+
     [self performSegueWithIdentifier:NEXT_CONTROLLER_SEGUE_ID sender:self];
 }
 
@@ -47,17 +50,6 @@ static NSArray *SCOPE = nil;
 - (IBAction)authorize:(id)sender {
     [VKSdk authorize:SCOPE];
 }
-// создание записи на стене
-/*
-- (IBAction)openShareDialog:(id)sender {
-    VKShareDialogController *shareDialog = [VKShareDialogController new];
-    shareDialog.text = @"This post created created created created and made and post and delivered using #vksdk #ios";
-    shareDialog.uploadImages = @[ [VKUploadImage uploadImageWithImage:[UIImage imageNamed:@"apple"] andParams:[VKImageParameters jpegImageWithQuality:1.0] ] ];
-    [shareDialog setCompletionHandler:^(VKShareDialogController *dialog, VKShareDialogControllerResult result) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }];
-    [self presentViewController:shareDialog animated:YES completion:nil];
-}*/
 
 
 - (void)vkSdkNeedCaptchaEnter:(VKError *)captchaError {
@@ -72,16 +64,19 @@ static NSArray *SCOPE = nil;
 - (void)vkSdkAccessAuthorizationFinishedWithResult:(VKAuthorizationResult *)result {
     if (result.token ) {
         self.res = result;
-       
-        [self startWorking];
+                [self startWorking];
     } else if (result.error) {
         [[[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"Access denied\n%@", result.error] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
     }
 }
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    
     self.tbController = (UITabBarController *)[segue destinationViewController];
-    Profile *prof = [self.tbController.viewControllers objectAtIndex:0];
-    prof.res = self.res;
+    UINavigationController *navi = [self.tbController.viewControllers objectAtIndex:0];
+    MyProfileViewController *vc = navi.topViewController;
+    vc.tok = self.res;
+   // vc.currentUser = self.currentUser;
+ //почему не работает с NSMutableDictionary???
     
 }
 - (void)vkSdkUserAuthorizationFailed {

@@ -3,3 +3,5 @@
 //
 
 #import "HTPChooseViewController.h"
+#import <VK_ios_sdk/VKSdk.h>
+#import "getUser.h"

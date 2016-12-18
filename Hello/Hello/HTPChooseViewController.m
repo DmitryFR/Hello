@@ -19,7 +19,7 @@
    
     self.lastname.text = [self.loggedUser valueForKey:@"last_name"];
     NSNumber *idd = [self.loggedUser valueForKey:@"id"];
-    self.ident.text = [idd stringValue];
+  //  self.ident.text = [idd stringValue];
     
 }
 

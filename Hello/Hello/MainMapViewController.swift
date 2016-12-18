@@ -1,26 +1,23 @@
-//HTPProfileViewController
-//  ViewController.swift
-//  Proba
 //
-//  Created by MacBook on 27.10.16.
-//  Copyright © 2016 MacBook. All rights reserved.
+//  MainMapViewController.swift
+//  Hello
 //
+//  Created by Дмитрий Фролов on 18.12.16.
+//  Copyright © 2016 Дмитрий Фролов. All rights reserved.
+//
+
 import UIKit
 import Firebase
 import VK_ios_sdk
 import CoreLocation
 import CoreBluetooth
-@objc class ProbaViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CLLocationManagerDelegate, CBPeripheralManagerDelegate {
-    
-//    let arrayOfUsers = ["Иванов","Сидоров","Петров"]
-//    let arrayOfWork = ["Ремонтирую Iphone","Студент","Инженер физик ядерщик"]
-//    let arrayOfComments = ["Принимаю заказы","Ищу работу","Хочу общаться"]
-   // let profile : HTPProfileViewController! = nil
-    
+import MapKit
+
+class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeripheralManagerDelegate, MKMapViewDelegate{
     var name : String!
     var rootRef: FIRDatabaseReference!
     var arrayOfUsers = [NSDictionary]()
-    var activityIndicator = UIActivityIndicatorView()
+    
     var tok = VKAccessToken()
     var arrayOfBeacons = [CLBeacon]()
     var locManager = CLLocationManager()
@@ -28,7 +25,13 @@ import CoreBluetooth
     var blueManager:CBPeripheralManager!
     var myLocation:CLLocation!
     var fbLon:CLLocationDegrees!
-    @IBOutlet weak var tableView: UITableView!
+    var arrayOfPins = NSArray()
+    var navi = UINavigationController()
+    var navi2 = UINavigationController()
+    var currentUser=NSDictionary()
+
+    
+    @IBOutlet weak var mapView: MKMapView!
     
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         if peripheral.state == .poweredOn{
@@ -42,58 +45,77 @@ import CoreBluetooth
     override func viewDidLoad() {
         super.viewDidLoad()
         locManager.delegate = self
+        self.mapView.delegate = self
         if (CLLocationManager.authorizationStatus() != CLAuthorizationStatus.authorizedWhenInUse){
             locManager.requestWhenInUseAuthorization()
         }
         locManager.desiredAccuracy = kCLLocationAccuracyBest //сигнификант
         locManager.startUpdatingLocation()
+
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-     myLocation = locations.last! as CLLocation
+        myLocation = locations.last! as CLLocation
         
     }
-    
+    //передача вк токена на другие вкладки таб бара
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navi = self.tabBarController?.viewControllers![1] as! UINavigationController
+        let prof = self.navi.topViewController as! MyProfileViewController
+        prof.tok = self.tok
+        self.navi2 = self.tabBarController?.viewControllers![2] as! UINavigationController
+        let fav = self.navi2.topViewController as! LikeUsersViewController
+        fav.tok = self.tok
+    }
     override func viewWillAppear( _ animated: Bool) {
-       
-        ////
+               ////
         // beacon раздача сигнала
         let beaconID = UIDevice.current.identifierForVendor?.uuidString
         let region = CLBeaconRegion(proximityUUID: NSUUID(uuidString: beaconID!) as! UUID, identifier: "Estimotes")
         myBeaconData = region.peripheralData(withMeasuredPower: nil)
         blueManager = CBPeripheralManager(delegate: self, queue: nil, options: nil)
         
-
-        rootRef = FIRDatabase.database().reference()
+        
+            rootRef = FIRDatabase.database().reference()
         let userRef = self.rootRef.child("users")
+                
+        
         //queryOrderByChild - в какой ветви дерева ищем
         //queryEqual - с каким значением сравниваем в ветви
         //observe.value - получаем значения полностью из userRef (но это не точно)
         //observe. childAdded - получаем только одну строчку (но это не точно)????
         
         
-                //ПОЛУЧЕНИЕ ПОЛЬЗОВАТЕЛЕЙ СОГЛАСНО ГЕОЛОКАЦИИ
+        //ПОЛУЧЕНИЕ ПОЛЬЗОВАТЕЛЕЙ СОГЛАСНО ГЕОЛОКАЦИИ
         userRef.observe(.value, with: {snapshot in
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
                 for snap in snapshots{
                     let u = snap.value as! NSDictionary
                     self.fbLon = u.value(forKey: "lon") as! CLLocationDegrees //при запуске через эмулятор не может считать локацию, потому что у эмултора нет ни локации ни блютуса
                     let fbLat = u.value(forKey: "lat") as! CLLocationDegrees
-                let fbLocation = CLLocation.init(latitude: fbLat, longitude: self.fbLon)
-                    let loc = self.myLocation.distance(from: fbLocation)
+                    let fbLocation = CLLocation.init(latitude: fbLat, longitude: self.fbLon)
+                    //let loc = self.myLocation.distance(from: fbLocation)
                     if self.myLocation.distance(from: fbLocation) < 150{
                         self.arrayOfUsers.append(snap.value as! NSDictionary)
                     }
                 }
-                self.tableView.reloadData()
+            //установка пина
+                self.mapView.setRegion(MKCoordinateRegionMake(CLLocationCoordinate2DMake(self.myLocation.coordinate.latitude, self.myLocation.coordinate.longitude), MKCoordinateSpanMake(0.05, 0.05)), animated: true)
+                for usr in self.arrayOfUsers{
+                    let locationPinCoord = CLLocationCoordinate2DMake(usr.value(forKey: "lat") as! CLLocationDegrees, usr.value(forKey: "lon") as! CLLocationDegrees)
+                    let annotation = MapPin()
+                    annotation.title = usr.value(forKey: "first_name") as! String?
+                    annotation.subtitle = usr.value(forKey: "last_name") as! String?
+                    annotation.setCoordinate(newCoord: locationPinCoord)
+                    self.arrayOfPins.adding(annotation)
+                    
+                }
+            self.mapView.addAnnotations(self.arrayOfPins as! [MKAnnotation])
             }
-        
+            
         })
         
     }
-    
-
-    // поиск по блютусу если поиск по геолокации не удался
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         self.arrayOfUsers.removeAll()
         let beaconID = UIDevice.current.identifierForVendor?.uuidString
@@ -101,7 +123,7 @@ import CoreBluetooth
         locManager.startRangingBeacons(in: region)
         rootRef = FIRDatabase.database().reference()
         let userRef = self.rootRef.child("users")
-
+        
         for beacon in self.arrayOfBeacons{
             
             userRef.queryOrdered(byChild: "beaconID").queryEqual(toValue: beacon.proximityUUID).observe(.value, with: {snapshot in
@@ -109,9 +131,9 @@ import CoreBluetooth
                     for snap in snapshots{
                         self.arrayOfUsers.append(snap.value as! NSDictionary)
                     }
-                    self.tableView.reloadData()
-                   
-                   
+                    
+                    
+                    
                 }
             })
         }
@@ -125,66 +147,34 @@ import CoreBluetooth
         }
     }
     
-    //Указываем количество рядов в секции
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-   //     NSLog("%@", self.arrayOfUsers.count)
-        return arrayOfUsers.count
-    }
-    //Создаем функцию создающую ячейки
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let СellID = "Cell" //Соответствие идентификатору
-        let cell = tableView.dequeueReusableCell( withIdentifier: СellID, for: indexPath) as! ProbaTableViewCell
-        let path = arrayOfUsers[indexPath.row].value(forKey: "photo_100")as!String
-        var url:NSURL = NSURL(string: path)!
-        var mydata:NSData = NSData(contentsOf: url as URL)!
-        
-        
-        cell.Avatar.image = UIImage(data: mydata as Data)
-        cell.Name?.text = arrayOfUsers[indexPath.row].value(forKey: "first_name")as!String
-        cell.Work?.text = arrayOfUsers[indexPath.row].value(forKey: "last_name")as! String
-      //  cell.Comments?.text = arrayOfUsers[indexPath.row].value(forKey: "")
-        
-        cell.Avatar.layer.cornerRadius = 33
-        cell.Avatar.clipsToBounds = true
-        
-        
-        
-        return cell
-    }
-
-  override  func viewDidDisappear(_ animated: Bool) {
+    override  func viewDidDisappear(_ animated: Bool) {
         self.arrayOfUsers.removeAll()
     }
-
-  
     
     
-    
-  
-        
-        //Попытка присвония объектам информации из ячейки
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "chosenUser"{
-            let indexp = self.tableView.indexPathForSelectedRow as? (NSIndexPath)
-            if  let profile = segue.destination as? HTPChooseViewController{
-                profile.loggedUser = arrayOfUsers[(indexp?.row)!] as! [AnyHashable : Any]
-                profile.tok = self.tok
-            }
+    //кастомный пин на карте
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MapPin{
+            let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "mapPin")
+            pinAnnotationView.canShowCallout = true
+            pinAnnotationView.animatesDrop = true
+            pinAnnotationView.pinColor = .purple
+            
+            let infoButton = UIButton(type: .custom) as UIButton
+            infoButton.frame.size.width = 44
+            infoButton.frame.size.height = 44
+            infoButton.setImage(UIImage(named: "Info-48"), for: .normal)
+            pinAnnotationView.leftCalloutAccessoryView = infoButton
+            return pinAnnotationView
         }
-        
+        return nil
     }
- 
+    
+// нажатие на кнопку на пине на карте
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        self.performSegue(withIdentifier: "ChosenUser", sender: self)
+    }
+    
     
 }
-
-
-
-        
-
-
-
-
-
