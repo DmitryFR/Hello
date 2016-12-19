@@ -18,6 +18,7 @@ class MapPin: NSObject, MKAnnotation {
 
     var title: String? = ""
     var subtitle: String? = ""
+    var assosiatedUser = NSMutableDictionary()
     func setCoordinate(newCoord:CLLocationCoordinate2D){
         self.coord = newCoord
     }

@@ -21,10 +21,14 @@ class ProfileTableViewCell: UITableViewCell {
 
     @IBOutlet weak var ImageFavoriteUser: UIImageView!
 
+    @IBOutlet weak var additionalInfoField: UILabel!
+    @IBOutlet weak var messageField: UILabel!
+    @IBOutlet weak var fam: UILabel!
     @IBOutlet weak var gender: UILabel!
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var WrireButtom: UIButton!
     var Focus : Int!
+    var currentUser = NSMutableDictionary()
     func aalpha () {
         
        // self.InFocus.alpha = 1

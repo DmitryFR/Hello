@@ -7,7 +7,8 @@
 //
 // ВЫБРАННЫЙ ИЗ ТАБЛИЦЫ ПОЛЬЗОВАТЕЛЬ
 import UIKit
-
+import Firebase
+import VK_ios_sdk
 class ProfileTableFirstVersion:    UIViewController,  UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
@@ -24,36 +25,31 @@ class ProfileTableFirstVersion:    UIViewController,  UITableViewDataSource, UIT
     var contentSize: CGFloat! 
     var cellSize: CGFloat!
     var AlphaUpFocus: Int = 0
-    
+    var currentUser = NSMutableDictionary()
+    var tok = VKAccessToken()
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
         tableView.backgroundColor = UIColor.clear
         self.cellSize = tableView.frame.size.width
-        self.BackIm.image = im
+      
         self.origYIm = self.BackIm.frame.origin.y
         self.tableView.separatorColor = UIColor.clear
         
+  //self.BackIm.image = im
+        
+        var url:NSURL = NSURL(string: self.currentUser.value(forKey: "photo_400_orig") as! String)!
+        var mydata:NSData = NSData(contentsOf: url as URL)!
+        
+        
+        self.BackIm.image = UIImage(data: mydata as Data)
 
-        
-        
-        // self.UnFocus.image = #imageLiteral(resourceName: "blue_blur_by_axiol.png")
-        
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-        
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+    
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
-    // MARK: - Table view data source
-    
+        
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -104,65 +100,65 @@ class ProfileTableFirstVersion:    UIViewController,  UITableViewDataSource, UIT
 
         if indexPath.row == 0 {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SuperCell0", for: indexPath) as! ProfileTableViewCell
-            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SuperCell0", for: indexPath) as! ProfTableViewCell
+            cell.currentUser = self.currentUser
             let CellH = cell.frame.size.width
             cell.frame.size.height = CellH
             
             cell.backgroundColor = UIColor.clear
         
-            cell.ChatButton.frame.size.width = cell.ChatButton.frame.size.height
-            cell.ChatButton.layer.cornerRadius = cell.ChatButton.frame.size.width / 2
-            cell.ChatButton.layer.borderWidth = 3
-            cell.ChatButton.layer.borderColor = UIColor.white.cgColor
-            cell.ChatButton.backgroundColor = UIColor.clear
-            cell.ChatButtonTap.frame.size.height = cell.ChatButton.frame.size.width
-            cell.ChatButtonTap.frame.size.width = cell.ChatButton.frame.size.height
+            cell.chatButton.frame.size.width = cell.chatButton.frame.size.height
+            cell.chatButton.layer.cornerRadius = cell.chatButton.frame.size.width / 2
+            cell.chatButton.layer.borderWidth = 3
+            cell.chatButton.layer.borderColor = UIColor.white.cgColor
+            cell.chatButton.backgroundColor = UIColor.clear
+            cell.chatButtonTap.frame.size.height = cell.chatButton.frame.size.width
+            cell.chatButtonTap.frame.size.width = cell.chatButton.frame.size.height
             
             
-            cell.FavoritUserButton.frame.size.width = cell.FavoritUserButton.frame.size.height
-            cell.FavoritUserButton.layer.cornerRadius = cell.FavoritUserButton.frame.size.width / 2
-            cell.FavoritUserButton.layer.borderWidth = 3
-            cell.FavoritUserButton.layer.borderColor = UIColor.white.cgColor
-            cell.FavoritUserButton.backgroundColor = UIColor.clear
+            cell.favoriteUserButton.frame.size.width = cell.favoriteUserButton.frame.size.height
+            cell.favoriteUserButton.layer.cornerRadius = cell.favoriteUserButton.frame.size.width / 2
+            cell.favoriteUserButton.layer.borderWidth = 3
+            cell.favoriteUserButton.layer.borderColor = UIColor.white.cgColor
+            cell.favoriteUserButton.backgroundColor = UIColor.clear
             cell.selectionStyle = UITableViewCellSelectionStyle.none
-            cell.FavoriteButtonTap.frame.size.height = cell.FavoritUserButton.frame.size.width
-            cell.FavoriteButtonTap.frame.size.width = cell.FavoritUserButton.frame.size.height
+            cell.favoriteButtonTap.frame.size.height = cell.favoriteUserButton.frame.size.width
+            cell.favoriteButtonTap.frame.size.width = cell.favoriteUserButton.frame.size.height
             
-            cell.ChatButton.frame.origin.x = (cell.frame.size.width / 3) - (cell.ChatButton.frame.size.width / 2)
+            cell.chatButton.frame.origin.x = (cell.frame.size.width / 3) - (cell.chatButton.frame.size.width / 2)
              
             
-            cell.FavoritUserButton.frame.origin.x = (cell.frame.size.width / 3 * 2) - (cell.FavoritUserButton.frame.size.width / 2)
+            cell.favoriteUserButton.frame.origin.x = (cell.frame.size.width / 3 * 2) - (cell.favoriteUserButton.frame.size.width / 2)
             
-            cell.ImageChat.frame.size.height = cell.ChatButton.frame.size.height / 2
-            cell.ImageChat.frame.size.width = cell.ImageChat.frame.size.height
-            cell.ImageChat.frame.origin.x = cell.ImageChat.frame.size.width / 2
-            cell.ImageChat.frame.origin.y = cell.ImageChat.frame.size.height / 2
+            cell.imageChat.frame.size.height = cell.chatButton.frame.size.height / 2
+            cell.imageChat.frame.size.width = cell.imageChat.frame.size.height
+            cell.imageChat.frame.origin.x = cell.imageChat.frame.size.width / 2
+            cell.imageChat.frame.origin.y = cell.imageChat.frame.size.height / 2
             
-            cell.ImageFavoriteUser.frame.size.height = cell.FavoritUserButton.frame.size.height / 2
-            cell.ImageFavoriteUser.frame.size.width = cell.ImageFavoriteUser.frame.size.height
-            cell.ImageFavoriteUser.frame.origin.x = cell.ImageFavoriteUser.frame.size.width / 2
-            cell.ImageFavoriteUser.frame.origin.y = cell.ImageFavoriteUser.frame.size.height / 2
+            cell.imageFavoriteUser.frame.size.height = cell.favoriteUserButton.frame.size.height / 2
+            cell.imageFavoriteUser.frame.size.width = cell.imageFavoriteUser.frame.size.height
+            cell.imageFavoriteUser.frame.origin.x = cell.imageFavoriteUser.frame.size.width / 2
+            cell.imageFavoriteUser.frame.origin.y = cell.imageFavoriteUser.frame.size.height / 2
             
-            cell.ChatButtonTap.frame.origin.x = 0
-            cell.ChatButtonTap.frame.origin.y = 0
-            cell.FavoriteButtonTap.frame.origin.x = 0
-            cell.FavoriteButtonTap.frame.origin.y = 0
-            cell.ImageChat.alpha = 1
-            cell.ImageFavoriteUser.alpha = 1
+            cell.chatButtonTap.frame.origin.x = 0
+            cell.chatButtonTap.frame.origin.y = 0
+            cell.favoriteButtonTap.frame.origin.x = 0
+            cell.favoriteButtonTap.frame.origin.y = 0
+            cell.imageChat.alpha = 1
+            cell.imageFavoriteUser.alpha = 1
            
-            cell.ChatButton.frame.origin.y = cell.frame.height - cell.ChatButton.frame.size.height * 1.2
-            cell.FavoritUserButton.frame.origin.y = cell.frame.height - cell.FavoritUserButton.frame.size.height * 1.2
+            cell.chatButton.frame.origin.y = cell.frame.height - cell.chatButton.frame.size.height * 1.2
+            cell.favoriteUserButton.frame.origin.y = cell.frame.height - cell.favoriteUserButton.frame.size.height * 1.2
             
             cell.selectionStyle = UITableViewCellSelectionStyle.none
-            hightChatBattom = cell.ChatButton.frame.size.height
+            hightChatBattom = cell.chatButton.frame.size.height
             
             celledit = cell
         }
         
         if indexPath.row == 1 {
         
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SuperCell1", for: indexPath) as! ProfileTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SuperCell1", for: indexPath) as! ProfTableViewCell
             
             cell.backgroundColor = UIColor.white
             cell.alpha = 0.6
@@ -175,6 +171,11 @@ class ProfileTableFirstVersion:    UIViewController,  UITableViewDataSource, UIT
             
             celledit = cell
             
+            cell.name.text = self.currentUser.value(forKey: "first_name") as! String?
+            cell.fam.text = self.currentUser.value(forKey: "last_name") as! String?
+            cell.gender.text = self.currentUser.value(forKey: "sex") as! String?
+            cell.messageField.text = self.currentUser.value(forKey: "message") as! String?
+            cell.additionalInfoField.text = self.currentUser.value(forKey: "additionalInfo") as! String?
         
         }
         
@@ -187,17 +188,15 @@ class ProfileTableFirstVersion:    UIViewController,  UITableViewDataSource, UIT
     }
     
 
-
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //if (segue.identifier == "ToChat"){
+            let vc = segue.destination as! ChatViewController
+            vc.currentUser = self.currentUser
+        vc.tok = self.tok
+       // }
+    }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
 
 }

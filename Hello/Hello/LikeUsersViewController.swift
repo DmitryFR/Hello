@@ -8,15 +8,22 @@
 
 import UIKit
 import VK_ios_sdk
-class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+import CoreData
+import Firebase
+class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     
     @IBOutlet weak var imageBack: UIImageView!
     
-    
+    var manObj = NSManagedObject()
+    var appdelegate:AppDelegate!
+    var context = NSManagedObjectContext()
     var tok = VKAccessToken()
-    
+    var rootRef: FIRDatabaseReference!
+    var userArray = [NSManagedObject]()
+    var userArrayFB = [NSMutableDictionary]()
+    var currentUser = NSMutableDictionary()
     let arreyOfColorBorder = [UIColor.green,UIColor.darkGray,UIColor.brown,UIColor.black,UIColor.red]
     let arrayOfUsers = ["Петр Иванов","Владислав Сидоров","Ирина Петрова"]
     let arrayOfWork = ["Ремонтирую Iphone","Студент","Инженер физик ядерщик"]
@@ -24,7 +31,7 @@ class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableVie
     let arreyOfstatus = ["Открыт для общения","Готов к общению по проф. виду деятельности","Не очень хочу общаться","Не хочу общаться","Лучше не беспокоить"]
     var name : String!
     
-    let comment = ("Иду на концерт группы Грибы, друзья не пошли! Есть 2 лишних билета, отдам ДАРОМ!")
+   // let comment = ("Иду на концерт группы Грибы, друзья не пошли! Есть 2 лишних билета, отдам ДАРОМ!")
     
     
     
@@ -41,17 +48,42 @@ class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableVie
         self.OrigY = self.imageBack.frame.origin.y
         
         super.viewDidLoad()
+        self.appdelegate = UIApplication.shared.delegate as! AppDelegate!
+        self.context = self.appdelegate.persistentContainer.viewContext
+        rootRef = FIRDatabase.database().reference()
+        
+
+        
+        }
+    override func viewWillAppear(_ animated: Bool) {
+        let request = NSFetchRequest<NSFetchRequestResult>()
+        let entityDesk = NSEntityDescription.entity(forEntityName: "Chat", in: self.context)
+        request.entity = entityDesk
+        do{
+            let res = try self.context.fetch(request)
+            print (res)
+              self.userArray = res as! [NSManagedObject]
+            print (self.userArray)
+        }
+        catch{
+        let err = error as NSError
+            print(err)
+        }
+        let userRef = self.rootRef.child("users")
+        for usr in self.userArray{
+            userRef.queryOrdered(byChild: "id").queryEqual(toValue: usr.value(forKey: "userID")).observe(.value, with: {snapshot in
+                if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
+                    for snap in snapshots{
+                        self.userArrayFB.append(snap.value  as! NSMutableDictionary)
+                    }
+                    self.tableView.reloadData()
+                }
+            
+            })
+        }
         
         
-        
-        // Do any additional setup after loading the view.
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     
     var ContentIndex :CGFloat = 0
     
@@ -71,12 +103,12 @@ class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 6
+        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return arrayOfUsers.count
+        return self.userArray.count
     }
     
     
@@ -86,10 +118,15 @@ class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableVie
         let СellID = "CellUser" //Соответствие идентификатору
         let cell = tableView.dequeueReusableCell( withIdentifier: СellID, for: indexPath) as! UsersTableViewCell
         let statusInetificator = Int (arc4random_uniform(5))
-        cell.AvatarUser?.image = #imageLiteral(resourceName: "Tramp.jpg")
-        cell.NameUser?.text = arrayOfUsers[indexPath.row]
-        cell.StatusUser?.text = arreyOfstatus[statusInetificator]
-        cell.ComentUser?.text = arrayOfComments[indexPath.row]
+        if self.userArrayFB.count != 0 {
+        var url:NSURL = NSURL(string: self.userArrayFB[indexPath.row].value(forKey: "photo_400_orig") as! String)!
+        var mydata:NSData = NSData(contentsOf: url as URL)!
+        
+        
+        cell.AvatarUser.image = UIImage(data: mydata as Data)
+        cell.NameUser.text = self.userArrayFB[indexPath.row].value(forKey: "first_name")as! String?
+        //cell.StatusUser?.text = arreyOfstatus[statusInetificator]
+        cell.ComentUser?.text = self.userArrayFB[indexPath.row].value(forKey: "message") as! String?
         cell.AvatarUser.frame.size.height = cell.AvatarUser.frame.size.width
         cell.AvatarUser?.layer.cornerRadius = (cell.AvatarUser.frame.size.height / 2)
         cell.AvatarUser?.clipsToBounds = true
@@ -98,7 +135,7 @@ class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableVie
         // cell.AvatarUser?.layer.borderWidth = 0.8
         cell.StatusImage?.layer.cornerRadius = 10
         cell.StatusImage?.backgroundColor = arreyOfColorBorder[statusInetificator]
-        cell.ComentUser?.text = comment
+        //cell.ComentUser?.text = comment
         cell.BackGroundUserImage.layer.cornerRadius = 16
         cell.BackGroundUserImage.layer.borderWidth = 1
         cell.BackGroundUserImage.layer.borderColor = UIColor.white.cgColor
@@ -110,7 +147,7 @@ class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.backgroundColor = UIColor.clear
         cell.backgroundView = UIImageView (image: #imageLiteral(resourceName: "Bar2.png"))
         cell.backgroundView?.alpha = 0
-        
+        }
         
         return cell
     }
@@ -130,13 +167,13 @@ class LikeUsersViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toLikeProfileUser"{
+        if segue.identifier == "ChosenUser"{
             let indexp = self.tableView.indexPathForSelectedRow as? (NSIndexPath)
             if  let profile = segue.destination as? ProfileTableFirstVersion {
-                
-                profile.fioo = arrayOfUsers[(indexp?.row)!]
-                profile.com = arrayOfComments[(indexp?.row)!]
-                profile.im = #imageLiteral(resourceName: "Tramp.jpg")
+                profile.currentUser = self.userArrayFB[(indexp?.row)!]
+               // profile.fioo = arrayOfUsers[(indexp?.row)!]
+                //profile.com = arrayOfComments[(indexp?.row)!]
+                //profile.im = #imageLiteral(resourceName: "Tramp.jpg")
             }
         }
         

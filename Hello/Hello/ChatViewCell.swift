@@ -1,21 +1,16 @@
 //
-//  ProbaTableViewCell.swift
+//  ChatViewCell.swift
 //  Proba
 //
-//  Created by MacBook on 27.10.16.
+//  Created by MacBook on 12.12.16.
 //  Copyright © 2016 MacBook. All rights reserved.
 //
 
 import UIKit
 
-class ProbaTableViewCell: UITableViewCell {
+class ChatViewCell: UITableViewCell {
 
-    @IBOutlet weak var Avatar: UIImageView!
-    
-    @IBOutlet weak var Name: UILabel!
-    @IBOutlet weak var Work: UILabel!
-    @IBOutlet weak var Comments: UILabel!
-    
+    @IBOutlet weak var ChatMess: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

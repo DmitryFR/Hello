@@ -25,9 +25,8 @@ class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeri
     var blueManager:CBPeripheralManager!
     var myLocation:CLLocation!
     var fbLon:CLLocationDegrees!
-    var arrayOfPins = NSArray()
-    var navi = UINavigationController()
-    var navi2 = UINavigationController()
+    var arrayOfPins = [MKAnnotation]()
+    
     var currentUser=NSDictionary()
 
     
@@ -43,13 +42,14 @@ class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeri
         }
     }
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         locManager.delegate = self
         self.mapView.delegate = self
         if (CLLocationManager.authorizationStatus() != CLAuthorizationStatus.authorizedWhenInUse){
             locManager.requestWhenInUseAuthorization()
         }
-        locManager.desiredAccuracy = kCLLocationAccuracyBest //сигнификант
+        locManager.desiredAccuracy = kCLLocationAccuracyHundredMeters //сигнификант
         locManager.startUpdatingLocation()
 
     }
@@ -60,12 +60,7 @@ class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeri
     }
     //передача вк токена на другие вкладки таб бара
     override func viewWillDisappear(_ animated: Bool) {
-        self.navi = self.tabBarController?.viewControllers![1] as! UINavigationController
-        let prof = self.navi.topViewController as! MyProfileViewController
-        prof.tok = self.tok
-        self.navi2 = self.tabBarController?.viewControllers![2] as! UINavigationController
-        let fav = self.navi2.topViewController as! LikeUsersViewController
-        fav.tok = self.tok
+        self.locManager.stopUpdatingLocation()
     }
     override func viewWillAppear( _ animated: Bool) {
                ////
@@ -106,11 +101,14 @@ class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeri
                     let annotation = MapPin()
                     annotation.title = usr.value(forKey: "first_name") as! String?
                     annotation.subtitle = usr.value(forKey: "last_name") as! String?
+                    annotation.assosiatedUser = usr as! NSMutableDictionary
                     annotation.setCoordinate(newCoord: locationPinCoord)
-                    self.arrayOfPins.adding(annotation)
+                    self.arrayOfPins.append(annotation)
                     
                 }
-            self.mapView.addAnnotations(self.arrayOfPins as! [MKAnnotation])
+                for ann in self.arrayOfPins{
+                    self.mapView.addAnnotation(ann)
+                }
             }
             
         })
@@ -160,7 +158,6 @@ class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeri
             pinAnnotationView.canShowCallout = true
             pinAnnotationView.animatesDrop = true
             pinAnnotationView.pinColor = .purple
-            
             let infoButton = UIButton(type: .custom) as UIButton
             infoButton.frame.size.width = 44
             infoButton.frame.size.height = 44
@@ -173,8 +170,16 @@ class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeri
     
 // нажатие на кнопку на пине на карте
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        self.performSegue(withIdentifier: "ChosenUser", sender: self)
+      let an = (view.annotation) as! MapPin
+        let vc = (self.storyboard?.instantiateViewController(withIdentifier: "ChosenUser")) as! ProfileTableFirstVersion
+        vc.currentUser = an.assosiatedUser
+        vc.tok = self.tok
+       // self.performSegue(withIdentifier: "ChosenUser", sender: self)
+        self.present(vc, animated: true, completion: nil)
+        
     }
+    
+    
     
     
 }

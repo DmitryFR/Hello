@@ -25,7 +25,8 @@ class MyProfileViewController:   UIViewController,  UITableViewDataSource, UITab
 
     
 
-    
+    var navi = UINavigationController()
+    var navi2 = UINavigationController()
     var BackViewY : CGFloat!
     var locManager = CLLocationManager()
     var im: UIImage = #imageLiteral(resourceName: "Tramp.jpg")
@@ -43,21 +44,49 @@ class MyProfileViewController:   UIViewController,  UITableViewDataSource, UITab
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       rootRef = FIRDatabase.database().reference()
+        let beaconID = UIDevice.current.identifierForVendor?.uuidString
+        let requset:VKRequest = VKRequest(method: "users.get", parameters: [VK_API_ACCESS_TOKEN: self.tok, VK_API_FIELDS: "first_name, last_name, id, photo_400_orig,sex"])
         
-        var gUsr = getUser()
-        self.currentUser = gUsr.getUserVK(self.tok)
+        requset.execute(resultBlock: {(response)->Void in
+            print (response?.json)
+            self.currentUser.setValue((((response?.json as! NSArray).mutableCopy() as! NSMutableArray).firstObject as! NSDictionary).value(forKey: "first_name") as! String, forKey: "first_name")
+            self.currentUser.setValue((((response?.json as! NSArray).mutableCopy() as! NSMutableArray).firstObject as! NSDictionary).value(forKey: "last_name") as! String, forKey: "last_name")
+            self.currentUser.setValue((((response?.json as! NSArray).mutableCopy() as! NSMutableArray).firstObject as! NSDictionary).value(forKey: "photo_400_orig") as! String?, forKey: "photo_400_orig")
+            let num = (((response?.json as! NSArray).mutableCopy() as! NSMutableArray).firstObject as! NSDictionary).value(forKey: "id") as! NSNumber
+            self.currentUser.setValue(num.stringValue, forKey: "id")
+            self.currentUser.setValue(beaconID, forKey: "beaconID")
+            if ((((response?.json as! NSArray).mutableCopy() as! NSMutableArray).firstObject as! NSDictionary).value(forKey: "sex") as! Int == 1){
+            self.currentUser.setValue("Ж", forKey: "sex")
+            }
+            else if((((response?.json as! NSArray).mutableCopy() as! NSMutableArray).firstObject as! NSDictionary).value(forKey: "sex") as! Int == 2){
+                self.currentUser.setValue("М", forKey: "sex")
+                
+            }
+            else {self.currentUser.setValue("X", forKey: "sex")}
+//            self.currentUser.setValue("nmnmnm", forKey: "additionalInfo")
+//            self.currentUser.setValue("lllllll", forKey: "message")
+            self.SayMass.text = self.currentUser.value(forKey: "message") as! String?
+            self.AboutMe.text = self.currentUser.value(forKey: "additionalInfo") as! String?
+            var url:NSURL = NSURL(string: self.currentUser.value(forKey: "photo_400_orig") as! String)!
+            var mydata:NSData = NSData(contentsOf: url as URL)!
+            
+            
+            self.BackIm.image = UIImage(data: mydata as Data)
 
-//        requset.execute(resultBlock: {(response)->Void in
-//            print (response?.json)
-//            
-//            }, errorBlock: {(error) ->Void in print(error)})
-                 self.locManager.delegate = self
-        self.locManager.desiredAccuracy = kCLLocationAccuracyBest
+            self.rootRef.child("users").updateChildValues([self.currentUser.value(forKey: "id") as! String:self.currentUser])
+            self.tableView.reloadData()
+            self.locManager.startUpdatingLocation()
+            }, errorBlock: {(error) ->Void in print(error)})
+       
+        self.locManager.delegate = self
+        self.locManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         self.locManager.requestWhenInUseAuthorization()
-        self.locManager.startUpdatingLocation()
+        
         tableView.backgroundColor = UIColor.clear
         self.cellSize = tableView.frame.size.width
-        self.BackIm.image = im
+       // self.BackIm.image = im
+        
         self.origYIm = self.BackIm.frame.origin.y
         self.tableView.separatorColor = UIColor.clear
         
@@ -66,8 +95,7 @@ class MyProfileViewController:   UIViewController,  UITableViewDataSource, UITab
         self.BackView.frame.origin.y = self.tableView.frame.size.width + 62
         self.BackViewY = BackView.frame.origin.y
         
-        self.SayMass.text = self.currentUser.value(forKey: "message") as! String?
-        self.AboutMe.text = self.currentUser.value(forKey: "additionalInfo") as! String?
+        
         //Получение информации вк
         //let request:VKRequest = VKRequest(method: "users.get", parameters: ["fields":"first_name, last_name, uid, photo_400_orig,sex"])
        
@@ -84,8 +112,9 @@ class MyProfileViewController:   UIViewController,  UITableViewDataSource, UITab
         rootRef = FIRDatabase.database().reference()
         let userRef = self.rootRef.child("users")
         print ("OBNOVLENIE")
-        userRef.child(self.currentUser.value(forKey: "id") as! String).setValue(["lat":self.lat])
-        userRef.child(self.currentUser.value(forKey: "id") as! String).setValue(["lon":self.lon])
+        userRef.updateChildValues([self.currentUser.value(forKey: "id") as! String:self.currentUser], withCompletionBlock: {(error) in
+            print(error)
+        })
 //        //userRef.updateChildValues([self.currentUser.value(forKey: "id"):self.currentUser], withCompletionBlock: {(error) in
 //            print(error)
 //        })
@@ -93,27 +122,32 @@ class MyProfileViewController:   UIViewController,  UITableViewDataSource, UITab
 
     }
     
-    
+    override func viewWillAppear(_ animated: Bool) {
+        self.SayMass.text = self.currentUser.value(forKey: "message") as! String?
+        self.AboutMe.text = self.currentUser.value(forKey: "additionalInfo") as! String?
+    }
     override func viewWillDisappear(_ animated: Bool) {
         rootRef = FIRDatabase.database().reference()
         let userRef = self.rootRef.child("users")
         self.currentUser["message"] = self.SayMass.text
         self.currentUser["additionalInfo"] = self.AboutMe.text
-        userRef.updateChildValues([self.currentUser.value(forKey: "id") as! AnyHashable:self.currentUser], withCompletionBlock: {(error) in
+        userRef.updateChildValues([self.currentUser.value(forKey: "id") as! String:self.currentUser], withCompletionBlock: {(error) in
             print(error)
         })
         
+        self.navi = self.tabBarController?.viewControllers![2] as! UINavigationController
+        let prof = self.navi.topViewController as! MainMapViewController
+        prof.tok = self.tok
+        prof.currentUser = self.currentUser
+        self.navi2 = self.tabBarController?.viewControllers![1] as! UINavigationController
+        let fav = self.navi2.topViewController as! LikeUsersViewController
+        fav.tok = self.tok
+        fav.currentUser = self.currentUser
 
     }
     
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    // MARK: - Table view data source
-    
+        
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -192,10 +226,12 @@ class MyProfileViewController:   UIViewController,  UITableViewDataSource, UITab
             cell.alpha = 0.6
             
             cell.frame.size.height = 10
-            let nameString = self.currentUser.value(forKey: "first_name")
-//            let nameString = String(format: "%@ %@", (self.currentUser.value(forKey: "first_name") as! String?)!,(self.currentUser.value(forKey: "last_name") as! String?)!)
-            cell.name.text = nameString as! String?
-            cell.gender.text = self.currentUser.value(forKey: "gender") as! String?
+//            //let nameString = self.currentUser.value(forKey: "first_name")
+//            let nameString = "\(self.currentUser.value(forKey: "first_name")) \(self.currentUser.value(forKey: "last_name"))" as! String?
+        
+            cell.name.text = self.currentUser.value(forKey: "first_name") as! String?
+            cell.fam.text = self.currentUser.value(forKey: "last_name")as! String?
+            cell.gender.text = self.currentUser.value(forKey: "sex") as! String?
         
             
             
@@ -216,6 +252,9 @@ class MyProfileViewController:   UIViewController,  UITableViewDataSource, UITab
     }
     
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! EditInformationViewController
+        vc.currentUser = self.currentUser
+    }
     
 }
