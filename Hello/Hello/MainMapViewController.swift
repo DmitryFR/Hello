@@ -28,7 +28,7 @@ class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeri
     var arrayOfPins = [MKAnnotation]()
     
     var currentUser=NSDictionary()
-
+    var chosenUser = NSMutableDictionary()
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -171,14 +171,20 @@ class MainMapViewController: UIViewController, CLLocationManagerDelegate, CBPeri
 // нажатие на кнопку на пине на карте
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
       let an = (view.annotation) as! MapPin
-        let vc = (self.storyboard?.instantiateViewController(withIdentifier: "ChosenUser")) as! ProfileTableFirstVersion
-        vc.currentUser = an.assosiatedUser
-        vc.tok = self.tok
-       // self.performSegue(withIdentifier: "ChosenUser", sender: self)
-        self.present(vc, animated: true, completion: nil)
+//        let vc = (self.storyboard?.instantiateViewController(withIdentifier: "ChosenUser")) as! ProfileTableFirstVersion
+//        vc.currentUser = an.assosiatedUser
+//        vc.tok = self.tok
+        self.chosenUser = an.assosiatedUser
+        self.performSegue(withIdentifier: "ChosenUser", sender: self)
+        //self.present(vc, animated: true, completion: nil)
         
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! ProfileTableFirstVersion
+        vc.tok = self.tok
+        vc.currentUser = self.chosenUser
+    }
     
     
     

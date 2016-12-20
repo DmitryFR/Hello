@@ -17,6 +17,9 @@ class ProfileTableFirstVersion:    UIViewController,  UITableViewDataSource, UIT
 
     @IBOutlet weak var BackGroundImage: UIImageView!
     
+    @IBAction func popVC(_ sender: AnyObject) {
+        self.navigationController?.popViewController(animated: true)
+    }
 
     var im: UIImage!
     var fioo : String!
